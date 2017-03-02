@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/refresh" android:title="刷新" android:icon="@drawable/refresh_button" android:showAsAction="always"
+        tools:ignore="AlwaysShowAction,AppCompatResource" />
+    <item android:id="@+id/pause" android:title="暂停" android:icon="@drawable/pause_button" android:showAsAction="always"
+        tools:ignore="AppCompatResource" />
+    <item android:id="@+id/fullscreen" android:title="全屏" android:icon="@drawable/fullscreen_button" android:showAsAction="always"
+        tools:ignore="AppCompatResource" />
+    <item android:title="示波器背景色" android:icon="@drawable/switch_sfv_background">
+        <menu >
+            <group android:checkableBehavior="single">
+                <item android:title="白色背景" android:id="@+id/white_background"/>
+                <item android:title="黑色背景" android:id="@+id/black_background"/>
+            </group>
+        </menu>
+    </item>
+    <item android:title="about us" android:id="@+id/aboutUs"/>
+
+</menu>

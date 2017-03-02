@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="0dp"
+    android:paddingEnd="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp">
+
+    <RelativeLayout
+        android:id="@+id/relative_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5">
+        <SurfaceView
+            android:id="@+id/surfaceView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:id="@+id/img_time_left"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/time_left_line_blue"/>
+        <ImageView
+            android:id="@+id/img_time_right"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/time_right_line_green"/>
+        <ImageView
+            android:id="@+id/img_wave_CH1_horizontal_line"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/wave_ch1_horizontal_line_red"/>
+        <ImageView
+            android:id="@+id/img_wave_CH2_horizontal_line"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/wave_ch2_horizontal_line_orange"/>
+        <ImageView
+            android:id="@+id/img_X_axis"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/divider_line_horizontal_white"
+            android:layout_centerVertical="true"/>
+        <TextView
+            android:id="@+id/text_X_axis_standard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/img_X_axis"
+            android:layout_alignParentRight="true"
+            android:text="1s/div"
+            android:textSize="10sp"
+            android:textColor="@android:color/holo_green_light"/>
+        <ImageView
+            android:id="@+id/img_Y_axis"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/divider_line_vertical_white"
+            android:layout_centerHorizontal="true"/>
+        <TextView
+            android:id="@+id/text_Y_axis_standard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/img_Y_axis"
+            android:layout_alignParentBottom="true"
+            android:text="1V/div"
+            android:textSize="10sp"
+            android:textColor="@android:color/holo_green_light"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CH1-Frequency : "
+            android:textSize="10sp"
+            android:id="@+id/text_CH1_Frequency"
+            android:textColor="@android:color/holo_red_light"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"/>
+        <TextView
+            android:id="@+id/value_CH1_Frequency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="ch1"
+            android:textSize="10sp"
+            android:textColor="@android:color/holo_red_light"
+            android:layout_toRightOf="@id/text_CH1_Frequency"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CH2-Frequency : "
+            android:textSize="10sp"
+            android:id="@+id/text_CH2_Frequency"
+            android:textColor="@android:color/holo_red_light"
+            android:layout_below="@id/text_CH1_Frequency"
+            android:layout_alignLeft="@id/text_CH1_Frequency"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/value_CH2_Frequency"
+            android:hint="ch2"
+            android:textSize="10sp"
+            android:textColor="@android:color/holo_red_light"
+            android:layout_toRightOf="@id/text_CH2_Frequency"
+            android:layout_below="@id/value_CH1_Frequency"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="时间差： "
+            android:textSize="10sp"
+            android:id="@+id/text_TimeDifference"
+            android:textColor="@android:color/holo_red_light"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/value_TimeDifference"
+            android:hint="shijiancha"
+            android:textSize="10sp"
+            android:textColor="@android:color/holo_red_light"
+            android:layout_toRightOf="@id/text_TimeDifference"
+            android:layout_alignParentBottom="true"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/value_duty_ratio"
+            android:hint="dutyRatio"
+            android:textSize="10sp"
+            android:textColor="@android:color/holo_red_light"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="占空比： "
+            android:textSize="10sp"
+            android:id="@+id/text_duty_ratio"
+            android:textColor="@android:color/holo_red_light"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@id/value_duty_ratio"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:showDividers="middle"
+        android:divider="@drawable/divider_line_vertical"
+        android:layout_weight="3">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:showDividers="middle"
+            android:divider="@drawable/divider_line_3dp"
+            android:layout_weight="1">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:divider="@drawable/divider_line"
+                android:showDividers="middle">
+                <TableRow android:layout_weight="1"  android:gravity="center_vertical">
+                    <TextView android:text="CH1-Vpp" />
+                    <TextView android:id="@+id/text_CH1_Vpp"/>
+                </TableRow>
+
+                <TableRow android:layout_weight="1" android:gravity="center_vertical">
+                    <TextView android:text="CH1-Vmax"/>
+                    <TextView android:id="@+id/text_CH1_Vmax"/>
+                </TableRow>
+
+                <TableRow android:layout_weight="1" android:gravity="center_vertical">
+                    <TextView android:text="CH1-Period"/>
+                    <TextView android:id="@+id/text_CH1_Period"/>
+                </TableRow>
+
+            </TableLayout>
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:divider="@drawable/divider_line"
+                android:showDividers="middle">
+                <TableRow android:layout_weight="1" android:gravity="center_vertical">
+                    <TextView android:text="CH2-Vpp" />
+                    <TextView android:id="@+id/text_CH2_Vpp"/>
+                </TableRow>
+
+                <TableRow android:layout_weight="1" android:gravity="center_vertical">
+                    <TextView android:text="CH2-Vmax"/>
+                    <TextView android:id="@+id/text_CH2_Vmax"/>
+                </TableRow>
+
+                <TableRow android:layout_weight="1" android:gravity="center_vertical">
+                    <TextView android:text="CH2-Period"/>
+                    <TextView android:id="@+id/text_CH2_Period"/>
+                </TableRow>
+
+            </TableLayout>
+
+        </LinearLayout>
+
+        <TableLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="3dp"
+            android:layout_weight="1"
+            android:stretchColumns="0">
+            <TableRow android:layout_width="wrap_content"  android:gravity="center_vertical" android:layout_weight="1">
+                <TextView android:text="X轴 刻度" android:textSize="10sp" android:layout_weight="1"/>
+                <Button android:layout_width="wrap_content" android:id="@+id/x_axis_add" android:text="增大" android:layout_weight="1"/>
+                <Button android:layout_width="wrap_content" android:id="@+id/x_axis_reduce" android:text="减小" android:layout_weight="1"/>
+            </TableRow>
+
+            <TableRow android:layout_width="wrap_content" android:gravity="center_vertical" android:layout_weight="1">
+                <TextView android:text="Y轴 刻度" android:textSize="10sp" android:layout_weight="1"/>
+                <Button android:layout_width="wrap_content" android:id="@+id/y_axis_add" android:text="增大" android:layout_weight="1"/>
+                <Button android:layout_width="wrap_content" android:id="@+id/y_axis_reduce" android:text="减小" android:layout_weight="1"/>
+            </TableRow>
+
+            <TableRow android:layout_width="wrap_content" android:gravity="center_vertical" android:layout_weight="1">
+                <TextView android:text="时差前标" android:textSize="10sp" android:layout_weight="1"/>
+                <Button android:layout_width="wrap_content" android:id="@+id/time_left_left_move" android:text="左" android:layout_weight="1"/>
+                <Button android:layout_width="wrap_content" android:id="@+id/time_left_right_move" android:text="右" android:layout_weight="1"/>
+            </TableRow>
+
+            <TableRow android:layout_width="wrap_content" android:gravity="center_vertical" android:layout_weight="1">
+                <TextView android:text="时差后标" android:textSize="10sp" android:layout_weight="1"/>
+                <Button android:layout_width="wrap_content" android:id="@+id/time_right_left_move" android:text="左" android:layout_weight="1"/>
+                <Button android:layout_width="wrap_content" android:id="@+id/time_right_right_move" android:text="右" android:layout_weight="1"/>
+            </TableRow>
+        </TableLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
