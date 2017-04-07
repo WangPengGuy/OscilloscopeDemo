@@ -8,6 +8,7 @@
         tools:ignore="AppCompatResource" />
     <item android:id="@+id/fullscreen" android:title="全屏" android:icon="@drawable/fullscreen_button" android:showAsAction="always"
         tools:ignore="AppCompatResource" />
+    <item android:title="连接蓝牙设备"  android:id="@+id/connectDevice"/>
     <item android:title="示波器背景色" android:icon="@drawable/switch_sfv_background">
         <menu >
             <group android:checkableBehavior="single">

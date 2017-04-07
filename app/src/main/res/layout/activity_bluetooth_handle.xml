@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.android.wangpeng.oscilloscopedemo_layout.BluetoothHandleActivity">
+
+    <ListView
+        android:id="@+id/bluetoothDeviceListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="#888"
+        android:dividerHeight="2px"
+        android:paddingBottom="10dp"
+        android:paddingEnd="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingStart="20dp"
+        android:paddingTop="5dp"></ListView>
+
+</LinearLayout>

@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">手机示波器</string>
+    <string name="app_name">app</string>
     <string name="activity_main_name">示波器</string>
 </resources>

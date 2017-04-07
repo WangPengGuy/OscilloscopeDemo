@@ -2,6 +2,10 @@ package com.android.wangpeng.oscilloscopedemo_layout;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +35,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     XAxisResolutionChanged xAxisResolutionChanged;
     YAxisResolutionChanged yAxisResolutionChanged;
+
+    private Intent intent1;
+    private DataFromServiceReceiver dataFromServiceReceiver;
+    private int[] data_adc_Channel1_16bit = new int[256];    //把通道1的8bit的数据转换成16bit存在此数组中
+    private int[] data_adc_Channel2_16bit = new int[256];    //把通道2的8bit的数据转换成16bit存
+    private int data_num_temp = 0;
 
     int[] location_img_time_line_left; //记录 时间差前标 在父容器中 的坐标
     int[] location_img_time_line_right; //记录 时间差后标 在父容器中 的坐标
@@ -70,6 +80,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         //新建的类
         xAxisResolutionChanged = new XAxisResolutionChanged(btn_x_axis_add, btn_x_axis_reduce, text_x_axis_resolution);
         yAxisResolutionChanged = new YAxisResolutionChanged(btn_y_axis_add, btn_y_axis_reduce, text_y_axis_resolution);
+        dataFromServiceReceiver = new DataFromServiceReceiver();
+        intent1 = new Intent(MainActivity.this, GetBluetoothDataService.class);
+        //注册广播接收者
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(GetBluetoothDataService.ACTION_OSC_DATA_SEND);
+        MainActivity.this.registerReceiver(dataFromServiceReceiver, intentFilter);
         //类的方法
 
         //需要的数据
@@ -84,6 +100,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         btn_y_axis_add.setOnClickListener(this);
         btn_y_axis_reduce.setOnClickListener(this);
 
+        surfaceView.post(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(surfaceView.getWidth());
+                System.out.println(surfaceView.getHeight());
+            }
+        });
+
     }
 
     @Override
@@ -96,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.fullscreen:
+            case R.id.fullscreen:  //全屏
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 break;
             case R.id.refresh:
@@ -104,6 +128,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 break;
             case R.id.pause:
                 Toast.makeText(this,"您点击了“暂停”",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.connectDevice:     //连接蓝牙
+                startService(intent1);
+                Intent intent2 = new Intent(MainActivity.this, BluetoothHandleActivity.class);
+                startActivity(intent2);
                 break;
             case R.id.black_background:
                 Toast.makeText(this,"您点击了“黑色背景”",Toast.LENGTH_SHORT).show();
@@ -227,5 +256,37 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 yAxisResolutionChanged.onClick(btn_y_axis_reduce);
                 break;
         }
+    }
+
+    /**
+     * BroadcastReceiver：接收从service传过来的数据
+     */
+    public class DataFromServiceReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            switch (action){
+                case GetBluetoothDataService.ACTION_OSC_DATA_SEND:
+                    data_adc_Channel1_16bit = intent.getIntArrayExtra(GetBluetoothDataService.DATA_CHANNEL_1);
+                    data_adc_Channel2_16bit = intent.getIntArrayExtra(GetBluetoothDataService.DATA_CHANNEL_2);
+                    data_num_temp = intent.getIntExtra(GetBluetoothDataService.DATA_NUM_TEMP, 0);
+                    System.out.println("通道1的值");
+                    for(int i =0; i<data_num_temp; i++){
+                        System.out.printf("%d  ",data_adc_Channel1_16bit[i]);
+                    }
+                    System.out.println("通道2的值");
+                    for(int i =0; i<data_num_temp; i++){
+                        System.out.printf("%d  ",data_adc_Channel2_16bit[i]);
+                    }
+                    break;
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MainActivity.this.unregisterReceiver(dataFromServiceReceiver);
+        stopService(intent1);
     }
 }

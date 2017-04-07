@@ -16,7 +16,8 @@
         <SurfaceView
             android:id="@+id/surfaceView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="#55D1D1D1"/>
         <ImageView
             android:id="@+id/img_time_left"
             android:layout_width="wrap_content"
@@ -56,12 +57,12 @@
             android:background="@drawable/divider_line_horizontal_white"
             android:layout_centerVertical="true"/>
         <TextView
-            android:id="@+id/text_X_axis_standard"
+            android:id="@+id/text_X_axis_resolution"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@id/img_X_axis"
             android:layout_alignParentRight="true"
-            android:text="1s/div"
+            android:text="1S/div"
             android:textSize="10sp"
             android:textColor="@android:color/holo_green_light"/>
         <ImageView
@@ -71,7 +72,7 @@
             android:background="@drawable/divider_line_vertical_white"
             android:layout_centerHorizontal="true"/>
         <TextView
-            android:id="@+id/text_Y_axis_standard"
+            android:id="@+id/text_Y_axis_resolution"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/img_Y_axis"
@@ -229,26 +230,26 @@
             android:stretchColumns="0">
             <TableRow android:layout_width="wrap_content"  android:gravity="center_vertical" android:layout_weight="1">
                 <TextView android:text="X轴 刻度" android:textSize="10sp" android:layout_weight="1"/>
-                <Button android:layout_width="wrap_content" android:id="@+id/x_axis_add" android:text="增大" android:layout_weight="1"/>
-                <Button android:layout_width="wrap_content" android:id="@+id/x_axis_reduce" android:text="减小" android:layout_weight="1"/>
+                <Button android:layout_width="wrap_content" android:id="@+id/btn_x_axis_add" android:text="增大" android:layout_weight="1"/>
+                <Button android:layout_width="wrap_content" android:id="@+id/btn_x_axis_reduce" android:text="减小" android:layout_weight="1"/>
             </TableRow>
 
             <TableRow android:layout_width="wrap_content" android:gravity="center_vertical" android:layout_weight="1">
                 <TextView android:text="Y轴 刻度" android:textSize="10sp" android:layout_weight="1"/>
-                <Button android:layout_width="wrap_content" android:id="@+id/y_axis_add" android:text="增大" android:layout_weight="1"/>
-                <Button android:layout_width="wrap_content" android:id="@+id/y_axis_reduce" android:text="减小" android:layout_weight="1"/>
+                <Button android:layout_width="wrap_content" android:id="@+id/btn_y_axis_add" android:text="增大" android:layout_weight="1"/>
+                <Button android:layout_width="wrap_content" android:id="@+id/btn_y_axis_reduce" android:text="减小" android:layout_weight="1"/>
             </TableRow>
 
             <TableRow android:layout_width="wrap_content" android:gravity="center_vertical" android:layout_weight="1">
                 <TextView android:text="时差前标" android:textSize="10sp" android:layout_weight="1"/>
-                <Button android:layout_width="wrap_content" android:id="@+id/time_left_left_move" android:text="左" android:layout_weight="1"/>
-                <Button android:layout_width="wrap_content" android:id="@+id/time_left_right_move" android:text="右" android:layout_weight="1"/>
+                <Button android:layout_width="wrap_content" android:id="@+id/btn_time_left_left_move" android:text="左" android:layout_weight="1"/>
+                <Button android:layout_width="wrap_content" android:id="@+id/btn_time_left_right_move" android:text="右" android:layout_weight="1"/>
             </TableRow>
 
             <TableRow android:layout_width="wrap_content" android:gravity="center_vertical" android:layout_weight="1">
                 <TextView android:text="时差后标" android:textSize="10sp" android:layout_weight="1"/>
-                <Button android:layout_width="wrap_content" android:id="@+id/time_right_left_move" android:text="左" android:layout_weight="1"/>
-                <Button android:layout_width="wrap_content" android:id="@+id/time_right_right_move" android:text="右" android:layout_weight="1"/>
+                <Button android:layout_width="wrap_content" android:id="@+id/btn_time_right_left_move" android:text="左" android:layout_weight="1"/>
+                <Button android:layout_width="wrap_content" android:id="@+id/btn_time_right_right_move" android:text="右" android:layout_weight="1"/>
             </TableRow>
         </TableLayout>
 
