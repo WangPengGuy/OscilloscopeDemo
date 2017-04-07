@@ -14,12 +14,12 @@ import java.io.InputStream;
 public class GetBluetoothDataService extends Service {
 
     private InputStream inputStreamFromBluetooth;    //输入流，用来接收蓝牙数据
-    private byte[] buffer = new byte[1024];  //inputStream的输入缓冲
-    private int[] data_adc_8bit = new int[1024];  //STM32的ADC对波形抽样转换的数据，从STM32发送上来的是8bit的数据
+    private byte[] buffer = new byte[1500];  //inputStream的输入缓冲
+    private int[] data_adc_8bit = new int[1500];  //STM32的ADC对波形抽样转换的数据，从STM32发送上来的是8bit的数据
     private int[] data_adc_Channel1_8bit = new int[513];    //存储通道1的8bit的数据
     private int[] data_adc_Channel2_8bit = new int[513];    //存储通道2的8bit的数据
-    private int[] data_adc_Channel1_16bit = new int[256];    //把通道1的8bit的数据转换成16bit存在此数组中
-    private int[] data_adc_Channel2_16bit = new int[256];    //把通道2的8bit的数据转换成16bit存在此数组中
+    private int[] data_adc_Channel1_16bit = new int[257];    //把通道1的8bit的数据转换成16bit存在此数组中
+    private int[] data_adc_Channel2_16bit = new int[257];    //把通道2的8bit的数据转换成16bit存在此数组中
     private int[] data_wave_1 = new int[512];   //要在surfaceView上显示的Channel_1数据
     private int[] data_wave_2 = new int[512];   //要在surfaceView上显示的Channel_1数据
     private int number_buffer = 0;   //存储蓝牙接收到的数据长度
@@ -100,8 +100,9 @@ public class GetBluetoothDataService extends Service {
                             data_adc_8bit[data_num+i]=buffer[i];
                     }
                     data_num = data_num + number_buffer;
+                    if(data_num>1024) data_num = 1024;
                     System.out.println(data_num);
-                    if(data_num >= 500){
+                    if(data_num >= 1024){
                         data_num_temp = data_num;
                         data_num = 0;
                         //判断数据处理线程是否终结（terminated），即上一次的run()函数是否执行完成

@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     XAxisResolutionChanged xAxisResolutionChanged;
     YAxisResolutionChanged yAxisResolutionChanged;
+    SurfaceViewOnDraw surfaceViewOnDraw;
 
     private Intent intent1;
     private DataFromServiceReceiver dataFromServiceReceiver;
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         yAxisResolutionChanged = new YAxisResolutionChanged(btn_y_axis_add, btn_y_axis_reduce, text_y_axis_resolution);
         dataFromServiceReceiver = new DataFromServiceReceiver();
         intent1 = new Intent(MainActivity.this, GetBluetoothDataService.class);
+        surfaceViewOnDraw = new SurfaceViewOnDraw(surfaceView, data_adc_Channel1_16bit, data_adc_Channel2_16bit, data_num_temp);
         //注册广播接收者
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(GetBluetoothDataService.ACTION_OSC_DATA_SEND);
@@ -222,8 +224,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         switch(WHICH_VIEW_GROUP_MOVE){
             case TIME:
                 switch (WHICH_VIEW_MOVE){
-                    case TIME_LEFT: img_time_line_left.offsetLeftAndRight(offsetX);break;
-                    case TIME_RIGHT: img_time_line_right.offsetLeftAndRight(offsetX);break;
+                    case TIME_LEFT: img_time_line_left.offsetLeftAndRight(offsetX);
+                          surfaceViewOnDraw.simpleDraw(data_adc_Channel1_16bit, data_adc_Channel2_16bit, data_num_temp,
+                                location_img_CH1_horizontal_line[1], location_img_CH2_horizontal_line[1] );
+                          break;
+                    case TIME_RIGHT: img_time_line_right.offsetLeftAndRight(offsetX);
+                        surfaceViewOnDraw.simpleDraw(data_adc_Channel1_16bit, data_adc_Channel2_16bit, data_num_temp,
+                                location_img_CH1_horizontal_line[1], location_img_CH2_horizontal_line[1] );
+                        break;
                     case NONE: break;
                 }
                 break;
@@ -270,14 +278,19 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     data_adc_Channel1_16bit = intent.getIntArrayExtra(GetBluetoothDataService.DATA_CHANNEL_1);
                     data_adc_Channel2_16bit = intent.getIntArrayExtra(GetBluetoothDataService.DATA_CHANNEL_2);
                     data_num_temp = intent.getIntExtra(GetBluetoothDataService.DATA_NUM_TEMP, 0);
+                    img_CH1_horizontal_line.getLocationInWindow(location_img_CH1_horizontal_line);
+                    img_CH2_horizontal_line.getLocationInWindow(location_img_CH2_horizontal_line);
+                    surfaceViewOnDraw.simpleDraw(data_adc_Channel1_16bit, data_adc_Channel2_16bit, data_num_temp,
+                                                    location_img_CH1_horizontal_line[1], location_img_CH2_horizontal_line[1] );
                     System.out.println("通道1的值");
-                    for(int i =0; i<data_num_temp; i++){
-                        System.out.printf("%d  ",data_adc_Channel1_16bit[i]);
+                    for(int j =0; j<data_num_temp; j++){
+                        System.out.printf("%d  ",data_adc_Channel1_16bit[j]);
                     }
                     System.out.println("通道2的值");
-                    for(int i =0; i<data_num_temp; i++){
-                        System.out.printf("%d  ",data_adc_Channel2_16bit[i]);
+                    for(int j =0; j<data_num_temp; j++){
+                        System.out.printf("%d  ",data_adc_Channel2_16bit[j]);
                     }
+
                     break;
             }
         }
