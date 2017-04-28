@@ -1,6 +1,9 @@
 package com.android.wangpeng.oscilloscopedemo_layout;
 
 import android.app.Activity;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -16,12 +19,10 @@ public class XAxisResolutionChanged implements View.OnClickListener{
     private TextView text_X_axis_resolution;
     private Button btn_X_add, btn_x_reduce;
     //将被显示的X轴的分辨率
-    private String[] strings_X_axis_resolution = {"2S/div", "1S/div", "500mS/div", "200mS/div", "100mS/div", "50mS/div", "20mS/div",
-            "10mS/div", "5mS/div", "2mS/div", "1mS/div", "500uS/div", "200uS/div", "100uS/div", "50uS/div", "20uS/div", "10uS/div",
-            "5uS/div", "2uS/div", "1uS/div"};
+    private String[] strings_X_axis_resolution = {"20mS/div", "10mS/div", "5mS/div", "2mS/div", "1mS/div", "500uS/div"};
     //将X轴的分辨率换算成 毫秒级
-    private float[] value_X_axis_resolution = {2000, 1000, 500, 200, 100, 50, 20, 10, 5, 2, 1, 0.5f, 0.2f, 0.1f, 0.05f, 0.02f, 0.01f, 0.005f, 0.002f, 0.001f};
-    private int clickTimes = 0; //点击次数
+    private float[] value_X_axis_resolution = {20, 10, 5, 2, 1, 0.5f, 0.2f, 0.1f, 0.05f};
+    static int clickTimes = 0; //点击次数
 
     public XAxisResolutionChanged(Button button_add, Button button_reduce, TextView textView) {
         this.btn_X_add = button_add;
@@ -48,14 +49,38 @@ public class XAxisResolutionChanged implements View.OnClickListener{
         return value_X_axis_resolution[i];
     }
 
+    /**
+     * 计算时间差
+     * @param line_1_x    时间前标的x坐标
+     * @param line_2_x    时间后标的x坐标
+     * @return  时间差
+     */
+    public void getDeltaTime(final int line_1_x, final int line_2_x, final Handler handler){
+        final int x1 = line_1_x, x2 = line_2_x;
+        final Handler handler1 = handler;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int dx = Math.abs(x1 - x2);
+                float dt = (dx/90.0f)*value_X_axis_resolution[clickTimes];
+                Message message = new Message();
+                Bundle bundle = new Bundle();
+                bundle.putFloat("deltaTime",dt);
+                bundle.putInt("code",2);
+                message.setData(bundle);
+                handler1.sendMessage(message);
+            }
+        }).start();
+    }
+
     @Override
     public void onClick(View view) {
         if(view == btn_X_add){
             clickTimes--;
             if (clickTimes <= 0){
                 clickTimes = 0;
-            }else if(clickTimes >=19){
-                clickTimes = 19;
+            }else if(clickTimes >=5){
+                clickTimes = 5;
             }else {}
             String s = getText_XAxisResolution(clickTimes);
             float f = getValue_XAxisResolution(clickTimes);
@@ -65,8 +90,8 @@ public class XAxisResolutionChanged implements View.OnClickListener{
             clickTimes++;
             if (clickTimes <= 0){
                 clickTimes = 0;
-            }else if(clickTimes >=19){
-                clickTimes = 19;
+            }else if(clickTimes >=5){
+                clickTimes = 5;
             }else {}
             String s = getText_XAxisResolution(clickTimes);
             float f = getValue_XAxisResolution(clickTimes);

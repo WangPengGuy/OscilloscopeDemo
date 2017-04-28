@@ -10,18 +10,18 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 public class GetBluetoothDataService extends Service {
 
     private InputStream inputStreamFromBluetooth;    //输入流，用来接收蓝牙数据
+    private static OutputStream outputStreamFromPhone;   //输出流，用来发送命令
     private byte[] buffer = new byte[1500];  //inputStream的输入缓冲
     private int[] data_adc_8bit = new int[1500];  //STM32的ADC对波形抽样转换的数据，从STM32发送上来的是8bit的数据
-    private int[] data_adc_Channel1_8bit = new int[513];    //存储通道1的8bit的数据
-    private int[] data_adc_Channel2_8bit = new int[513];    //存储通道2的8bit的数据
-    private int[] data_adc_Channel1_16bit = new int[257];    //把通道1的8bit的数据转换成16bit存在此数组中
-    private int[] data_adc_Channel2_16bit = new int[257];    //把通道2的8bit的数据转换成16bit存在此数组中
-    private int[] data_wave_1 = new int[512];   //要在surfaceView上显示的Channel_1数据
-    private int[] data_wave_2 = new int[512];   //要在surfaceView上显示的Channel_1数据
+    private int[] data_adc_Channel1_8bit = new int[600];    //存储通道1的8bit的数据
+    private int[] data_adc_Channel2_8bit = new int[600];    //存储通道2的8bit的数据
+    private int[] data_adc_Channel1_16bit = new int[300];    //把通道1的8bit的数据转换成16bit存在此数组中
+    private int[] data_adc_Channel2_16bit = new int[300];    //把通道2的8bit的数据转换成16bit存在此数组中
     private int number_buffer = 0;   //存储蓝牙接收到的数据长度
     int data_num=0;
     int data_num_temp = 0;
@@ -62,8 +62,6 @@ public class GetBluetoothDataService extends Service {
             String action = intent.getAction();
             switch (action){
                 case BluetoothHandleActivity.ACTION_DEVICE_CONNECTED:
-
-                        //System.out.println("bluetooth socket is connected. ");
                         try {
                             inputStreamFromBluetooth = BluetoothHandleActivity.mmSocket.getInputStream();    //得到蓝牙输入数据流
                         } catch (IOException e) {
@@ -72,9 +70,6 @@ public class GetBluetoothDataService extends Service {
                         }
                         readThread.start();    //打开数据接收线程
                         dataSwitchAndDrawThread.start();   //打开数据转换和绘图线程
-//                    }else{
-//                        System.out.println("bluetooth socket is disconnected. ");
-//                    }
                     break;
                 case BluetoothHandleActivity.ACTION_DEVICE_DISCONNECTED:
                     Toast.makeText(GetBluetoothDataService.this, "未连接设备,请重新尝试连接！", Toast.LENGTH_LONG).show();
@@ -92,7 +87,7 @@ public class GetBluetoothDataService extends Service {
             while(true){
                 try {
                     number_buffer = inputStreamFromBluetooth.read(buffer);
-                    System.out.println("接收了"+number_buffer+"个数据：");
+                    //System.out.println("接收了"+number_buffer+"个数据：");
                     for(int i=0; i<number_buffer; i++) {
                         if(buffer[i] < 0)
                             data_adc_8bit[data_num+i]= buffer[i] + 256;
@@ -100,9 +95,9 @@ public class GetBluetoothDataService extends Service {
                             data_adc_8bit[data_num+i]=buffer[i];
                     }
                     data_num = data_num + number_buffer;
-                    if(data_num>1024) data_num = 1024;
-                    System.out.println(data_num);
-                    if(data_num >= 1024){
+                    if(data_num>1000) data_num = 1000;
+                    //System.out.println(data_num);
+                    if(data_num >= 1000){
                         data_num_temp = data_num;
                         data_num = 0;
                         //判断数据处理线程是否终结（terminated），即上一次的run()函数是否执行完成
@@ -242,5 +237,22 @@ public class GetBluetoothDataService extends Service {
             j2 = 0;
         }
     };
+
+    /**
+     * 蓝牙发送一位数据（data<255）
+     * @param data
+     */
+    public static void sendChar(int data){
+        try {
+            outputStreamFromPhone = BluetoothHandleActivity.mmSocket.getOutputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            outputStreamFromPhone.write(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
