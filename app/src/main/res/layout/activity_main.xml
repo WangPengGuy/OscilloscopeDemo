@@ -51,6 +51,43 @@
                 android:text="1V/div"
                 android:textSize="10sp"
                 android:textColor="@android:color/holo_green_light"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CH1-Frequency : "
+                android:textSize="10sp"
+                android:id="@+id/text_CH1_Frequency"
+                android:textColor="@android:color/holo_red_light"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"/>
+            <TextView
+                android:id="@+id/value_CH1_Frequency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="ch1"
+                android:textSize="10sp"
+                android:textColor="@android:color/holo_red_light"
+                android:layout_toRightOf="@id/text_CH1_Frequency"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CH2-Frequency : "
+                android:textSize="10sp"
+                android:id="@+id/text_CH2_Frequency"
+                android:textColor="#ffff11"
+                android:layout_below="@id/text_CH1_Frequency"
+                android:layout_alignLeft="@id/text_CH1_Frequency"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/value_CH2_Frequency"
+                android:hint="ch2"
+                android:textSize="10sp"
+                android:textColor="#ffff11"
+                android:layout_toRightOf="@id/text_CH2_Frequency"
+                android:layout_below="@id/value_CH1_Frequency"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -90,44 +127,6 @@
                 android:layout_centerVertical="true"
                 android:src="@drawable/wave_ch2_horizontal_line_orange"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="CH1-Frequency : "
-                android:textSize="10sp"
-                android:id="@+id/text_CH1_Frequency"
-                android:textColor="@android:color/holo_red_light"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"/>
-            <TextView
-                android:id="@+id/value_CH1_Frequency"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="ch1"
-                android:textSize="10sp"
-                android:textColor="@android:color/holo_red_light"
-                android:layout_toRightOf="@id/text_CH1_Frequency"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="CH2-Frequency : "
-                android:textSize="10sp"
-                android:id="@+id/text_CH2_Frequency"
-                android:textColor="#ffff11"
-                android:layout_below="@id/text_CH1_Frequency"
-                android:layout_alignLeft="@id/text_CH1_Frequency"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/value_CH2_Frequency"
-                android:hint="ch2"
-                android:textSize="10sp"
-                android:textColor="#ffff11"
-                android:layout_toRightOf="@id/text_CH2_Frequency"
-                android:layout_below="@id/value_CH1_Frequency"/>
-
         </RelativeLayout>
     </RelativeLayout>
 
@@ -135,7 +134,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="#ff555522">
+        android:background="#ff464646">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

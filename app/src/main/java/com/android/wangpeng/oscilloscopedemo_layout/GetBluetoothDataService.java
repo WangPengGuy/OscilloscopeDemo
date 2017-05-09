@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
 import android.os.IBinder;
 import android.widget.Toast;
 
@@ -25,18 +26,24 @@ public class GetBluetoothDataService extends Service {
     private int number_buffer = 0;   //存储蓝牙接收到的数据长度
     int data_num=0;
     int data_num_temp = 0;
+    int freq_channel_1 = 0;
+    int freq_channel_2 = 0;
     public final static String ACTION_OSC_DATA_SEND = "com.android.getBluetoothDataService.SEND_OSC_DATA";
                                                             // 给MainActivity发送广播的action
     public final static String DATA_CHANNEL_1 = "Channel_1_data";   //发送通道1的数据的数据标签
+    public final static String FREQ_CHANNEL_1 = "Channel_1_freq";   //发送通道1的频率的数据标签
     public final static String DATA_CHANNEL_2 = "Channel_2_data";   //发送通道2的数据的数据标签
+    public final static String FREQ_CHANNEL_2 = "Channel_2_freq";   //发送通道2的频率的数据标签
     public final static String DATA_NUM_TEMP = "data_num_temp";
 
     private DeviceConnectStateReceiver deviceConnectStateReceiver;
+    private DataSwitchAndDrawThread dataSwitchAndDrawThread;
 
     @Override
     public void onCreate() {
         System.out.println("service is onCreate()");
         deviceConnectStateReceiver = new DeviceConnectStateReceiver();
+        dataSwitchAndDrawThread = new DataSwitchAndDrawThread();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BluetoothHandleActivity.ACTION_DEVICE_CONNECTED);
         intentFilter.addAction(BluetoothHandleActivity.ACTION_DEVICE_DISCONNECTED);
@@ -107,6 +114,7 @@ public class GetBluetoothDataService extends Service {
 //                        for(int i=0; i<data_num_temp; i++){
 //                            System.out.printf("%d  ",data_adc_8bit[i]);
 //                        }
+//                        System.out.println("\r\n");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -124,84 +132,112 @@ public class GetBluetoothDataService extends Service {
     /**
      * 对接收到的蓝牙数据进行转换并绘图的线程
      */
-    Thread dataSwitchAndDrawThread = new Thread() {
-        short i=0;
-        int j1=0, j2=0;
+    public class DataSwitchAndDrawThread extends Thread {
+
+        int i = 0;
+        int j1 = 0, j2 = 0;
+        int temp_freq_ch1 = 0, temp_freq_ch2 = 0;
         int check_bit_7_4 = 0;       //校验第7、4比特位：00 --> high_8_bit  ADC_Channel_0
-                                       //                 01 --> high_8_bit  ADC_Channel_2
-                                       //                 10 --> low_8_bit  ADC_Channel_0
-                                       //                 11 --> low_8_bit  ADC_Channel_2
+        //                 01 --> high_8_bit  ADC_Channel_2
+        //                 10 --> low_8_bit  ADC_Channel_0
+        //                 11 --> low_8_bit  ADC_Channel_2
         int check_bit_6 = 0;         //通过校验第7、4比特位，如果是 high_8_bit，则第6位存储的是low_8_bit的第7位
         int check_bit_5 = 0;         //通过校验第7、4比特位，如果是 high_8_bit，则第5位存储的是low_8_bit的第4位
         int recover_bit_7_4 = 0;    //通过 check_bit_6 和 check_bit_5 恢复 low_8_bit 的第7、4比特位
-        public void run(){
-            for(i=0; i<data_num_temp; i++){
-                check_bit_7_4 = data_adc_8bit[i] & 0x90;  //0x90 = 10010000,取出第7、4比特位
-                check_bit_6 = data_adc_8bit[i] & 0x40;    //0x40 = 01000000,取出第6比特位
-                check_bit_5 = data_adc_8bit[i] & 0x20;    //0x20 = 00100000,取出第5比特位
-                switch (check_bit_7_4) {
-                    case 0x00:     // high_8_bit  ADC_Channel_0
-                        if (i % 2 == 0) {   //如果在偶数位
-                            data_adc_Channel1_8bit[j1++] = data_adc_8bit[i] & 0x0f;      //将高4位置0，还原数据
-                        } else {
-                            if (j1 == 0) j1 = j1 + 1;
-                            data_adc_Channel1_8bit[--j1] = data_adc_8bit[i] & 0x0f;
-                            j1 = ++j1;
-                        }
-                        break;
-                    case 0x80:     // low_8_bit  ADC_Channel_0
-                        recover_bit_7_4 = (check_bit_6 << 1) | (check_bit_5 >> 1);
-                        if (i % 2 == 0) {
-                            if (i != 0) {     //如果不是第0位的数
+
+        @Override
+        public void run() {
+            for (i = 0; i < data_num_temp; i++) {
+                if ((data_adc_8bit[i] == 0xff) && (data_adc_8bit[i + 1] == 0xff)) {
+                    temp_freq_ch1 = data_adc_8bit[i + 2] << 8 | data_adc_8bit[i + 3];
+                    temp_freq_ch2 = data_adc_8bit[i + 4] << 8 | data_adc_8bit[i + 5];
+                    if(temp_freq_ch1 == 0){
+                        freq_channel_1 = 0;
+                    }else {
+                        freq_channel_1 = 100000 / temp_freq_ch1;
+                    }
+                    if(temp_freq_ch2 == 0){
+                        freq_channel_2 = 0;
+                    }else {
+                        freq_channel_2 = 100000 / temp_freq_ch2;
+                    }
+//                    System.out.printf("通道1的频率： %d \r\n", freq_channel_1);
+//                    System.out.printf("通道2的频率： %d \r\n", freq_channel_2);
+                    i = i + 5;
+                } else {
+                    check_bit_7_4 = data_adc_8bit[i] & 0x90;  //0x90 = 10010000,取出第7、4比特位
+                    switch (check_bit_7_4) {
+                        case 0x00:     // high_8_bit  ADC_Channel_0
+                            check_bit_6 = data_adc_8bit[i] & 0x40;    //0x40 = 01000000,取出第6比特位
+                            check_bit_5 = data_adc_8bit[i] & 0x20;    //0x20 = 00100000,取出第5比特位
+                            if (i % 2 == 0) {   //如果在偶数位
+                                data_adc_Channel1_8bit[j1++] = data_adc_8bit[i] & 0x0f;      //将高4位置0，还原数据
+                            } else {
                                 if (j1 == 0) j1 = j1 + 1;
-                                data_adc_Channel1_8bit[--j1] = (data_adc_8bit[i] & 0x6f) | recover_bit_7_4;
-                                //0x6f=01101111,先将第7、4位置0，再将原数据给进去
+                                data_adc_Channel1_8bit[--j1] = data_adc_8bit[i] & 0x0f;
                                 j1 = ++j1;
-                            } else {
-                                j1 = ++j1;
-                                j2 = ++j2;
-                                break;
                             }
-                        } else {
-                            data_adc_Channel1_8bit[j1++] = (data_adc_8bit[i] & 0x6f) | recover_bit_7_4;
-                        }
-                        break;
-                    case 0x10:    // high_8_bit  ADC_Channel_2
-                        if (i % 2 == 0) {   //如果在偶数位
-                            data_adc_Channel2_8bit[j2++] = data_adc_8bit[i] & 0x0f;
-                        } else {
-                            if (j2 == 0) j2 = j2 + 1;
-                            data_adc_Channel2_8bit[--j2] = data_adc_8bit[i] & 0x0f;
-                            j2 = ++j2;
-                        }
-                        break;
-                    case 0x90:    // low_8_bit  ADC_Channel_2
-                        recover_bit_7_4 = (check_bit_6 << 1) | (check_bit_5 >> 1);
-                        if (i % 2 == 0) {
-                            if (i != 0) {     //如果不是第0位的数
+                            break;
+                        case 0x80:     // low_8_bit  ADC_Channel_0
+                            recover_bit_7_4 = (check_bit_6 << 1) | (check_bit_5 >> 1);
+                            if (i % 2 == 0) {
+                                if (i != 0) {     //如果不是第0位的数
+                                    if (j1 == 0) j1 = j1 + 1;
+                                    data_adc_Channel1_8bit[--j1] = (data_adc_8bit[i] & 0x6f) | recover_bit_7_4;
+                                    //0x6f=01101111,先将第7、4位置0，再将原数据给进去
+                                    j1 = ++j1;
+                                } else {
+                                    j1 = ++j1;
+                                    j2 = ++j2;
+                                    break;
+                                }
+                            } else {
+                                data_adc_Channel1_8bit[j1++] = (data_adc_8bit[i] & 0x6f) | recover_bit_7_4;
+                            }
+                            break;
+                        case 0x10:    // high_8_bit  ADC_Channel_2
+                            check_bit_6 = data_adc_8bit[i] & 0x40;    //0x40 = 01000000,取出第6比特位
+                            check_bit_5 = data_adc_8bit[i] & 0x20;    //0x20 = 00100000,取出第5比特位
+                            if (i % 2 == 0) {   //如果在偶数位
+                                data_adc_Channel2_8bit[j2++] = data_adc_8bit[i] & 0x0f;
+                            } else {
                                 if (j2 == 0) j2 = j2 + 1;
-                                data_adc_Channel2_8bit[--j2] = (data_adc_8bit[i] & 0x6f) | recover_bit_7_4;
+                                data_adc_Channel2_8bit[--j2] = data_adc_8bit[i] & 0x0f;
                                 j2 = ++j2;
-                            } else {
-                                j2 = ++j2;
-                                j1 = ++j1;
-                                break;
                             }
-                        } else {
-                            data_adc_Channel2_8bit[j2++] = (data_adc_8bit[i] & 0x6f) | recover_bit_7_4;
-                        }
-                        break;
-                    default:
-                        break;
+                            break;
+                        case 0x90:    // low_8_bit  ADC_Channel_2
+                            recover_bit_7_4 = (check_bit_6 << 1) | (check_bit_5 >> 1);
+                            if (i % 2 == 0) {
+                                if (i != 0) {     //如果不是第0位的数
+                                    if (j2 == 0) j2 = j2 + 1;
+                                    data_adc_Channel2_8bit[--j2] = (data_adc_8bit[i] & 0x6f) | recover_bit_7_4;
+                                    j2 = ++j2;
+                                } else {
+                                    j2 = ++j2;
+                                    j1 = ++j1;
+                                    break;
+                                }
+                            } else {
+                                data_adc_Channel2_8bit[j2++] = (data_adc_8bit[i] & 0x6f) | recover_bit_7_4;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
                 }
+                check_bit_7_4 = 0;
+                check_bit_6 = 0;
+                check_bit_5 = 0;
+                recover_bit_7_4 = 0;
             }
 
             // 将高8位和低8位的数据合在一起
-            for(i=0; i<data_num_temp/4; i++){
-                j1 = i*2;
-                j2 = i*2;
-                data_adc_Channel1_16bit[i] = data_adc_Channel1_8bit[j1] << 8 | data_adc_Channel1_8bit[j1+1];
-                data_adc_Channel2_16bit[i] = data_adc_Channel2_8bit[j2] << 8 | data_adc_Channel2_8bit[j2+1];
+            for (i = 0; i < data_num_temp / 4; i++) {
+                j1 = i * 2;
+                j2 = i * 2;
+                data_adc_Channel1_16bit[i] = data_adc_Channel1_8bit[j1] << 8 | data_adc_Channel1_8bit[j1 + 1];
+                data_adc_Channel2_16bit[i] = data_adc_Channel2_8bit[j2] << 8 | data_adc_Channel2_8bit[j2 + 1];
             }
 
             // 给MainActivity发送广播：包含action和数据
@@ -209,7 +245,9 @@ public class GetBluetoothDataService extends Service {
             intent.setAction(GetBluetoothDataService.ACTION_OSC_DATA_SEND);
             intent.putExtra(DATA_CHANNEL_1, data_adc_Channel1_16bit);
             intent.putExtra(DATA_CHANNEL_2, data_adc_Channel2_16bit);
-            intent.putExtra(DATA_NUM_TEMP, data_num_temp/4);
+            intent.putExtra(FREQ_CHANNEL_1, freq_channel_1);
+            intent.putExtra(FREQ_CHANNEL_2, freq_channel_2);
+            intent.putExtra(DATA_NUM_TEMP, data_num_temp / 4);
             sendBroadcast(intent);
 
 
@@ -236,7 +274,7 @@ public class GetBluetoothDataService extends Service {
             j1 = 0;
             j2 = 0;
         }
-    };
+    }
 
     /**
      * 蓝牙发送一位数据（data<255）

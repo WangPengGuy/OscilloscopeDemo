@@ -278,18 +278,14 @@ public class SurfaceViewOnDraw {
                     //计算通道1的最大最小值
                     if(max_adc1_value<=data_Channel_1[i]){
                         max_adc1_value = data_Channel_1[i];
-                        max_adc1_index = i;
                     }else if(min_adc1_value>=data_Channel_1[i]){
                         min_adc1_value = data_Channel_1[i];
-                        min_adc1_index = i;
                     }else {}
                     //计算通道2的最大最小值
                     if(max_adc2_value<=data_Channel_2[i]){
                         max_adc2_value = data_Channel_2[i];
-                        max_adc2_index = i;
                     }else if(min_adc2_value>=data_Channel_2[i]){
                         min_adc2_value = data_Channel_2[i];
-                        min_adc2_index = i;
                     }else {}
                 }
                 data_Channel1_max = max_adc1_value;
@@ -314,7 +310,6 @@ public class SurfaceViewOnDraw {
                 }
                 //计算频率
 
-                System.out.println(max_adc1_index+","+min_adc1_index+","+max_adc2_index+","+min_adc2_index);
                 //计算峰峰值
                 adc1_Vpp = max_adc1_v - min_adc1_v;
                 adc2_Vpp = max_adc2_v - min_adc2_v;

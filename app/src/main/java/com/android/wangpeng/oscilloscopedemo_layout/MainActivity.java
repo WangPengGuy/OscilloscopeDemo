@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     TextView text_timeDifference; //时间差
     TextView text_CH1_max, text_CH1_min, text_CH1_Vpp;   //通道1的最大值，最小值，峰峰值
     TextView text_CH2_max, text_CH2_min, text_CH2_Vpp;   //通道2的最大值，最小值，峰峰值
+    TextView text_ch1_freq, text_ch2_freq;  //通道1、通道2的频率
     SurfaceView surfaceView;
 
     XAxisResolutionChanged xAxisResolutionChanged;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private int[] data_adc_Channel1_16bit = new int[300];    //把通道1的8bit的数据转换成16bit存在此数组中
     private int[] data_adc_Channel2_16bit = new int[300];    //把通道2的8bit的数据转换成16bit存
     private int data_num_temp = 0;    //数据长度
+    private int freq_ch1 = 0, freq_ch2 = 0;  //通道1频率、通道2频率
     private int out_wave_type = 21;    //输出波形的类型标志
     private int out_wave_freq = 0;    //输出波形的频率
 
@@ -105,6 +107,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         text_CH2_max = (TextView) findViewById(R.id.text_CH2_Vmax);
         text_CH2_min = (TextView) findViewById(R.id.text_CH2_Vmin);
         text_CH2_Vpp = (TextView) findViewById(R.id.text_CH2_Vpp);
+        text_ch1_freq = (TextView) findViewById(R.id.value_CH1_Frequency);
+        text_ch2_freq = (TextView) findViewById(R.id.value_CH2_Frequency);
         text_timeDifference = (TextView) findViewById(R.id.value_TimeDifference);
         //新建的类
         xAxisResolutionChanged = new XAxisResolutionChanged(btn_x_axis_add, btn_x_axis_reduce, text_x_axis_resolution);
@@ -161,6 +165,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                     text_CH2_max.setText(""+bundle.getInt("max_adc2_v",0)+"mV");
                     text_CH2_min.setText(""+bundle.getInt("min_adc2_v",0)+"mV");
                     text_CH2_Vpp.setText(""+bundle.getInt("adc2_Vpp",0)+"mV");
+                    text_ch1_freq.setText(""+freq_ch2+"Hz");
+                    text_ch2_freq.setText(""+freq_ch1+"Hz");
                     break;
                 case 2:
                     text_timeDifference.setText("" + bundle.getFloat("deltaTime") + "ms");
@@ -391,6 +397,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 case GetBluetoothDataService.ACTION_OSC_DATA_SEND:
                     data_adc_Channel1_16bit = intent.getIntArrayExtra(GetBluetoothDataService.DATA_CHANNEL_1);
                     data_adc_Channel2_16bit = intent.getIntArrayExtra(GetBluetoothDataService.DATA_CHANNEL_2);
+                    freq_ch1 = intent.getIntExtra(GetBluetoothDataService.FREQ_CHANNEL_1,0);
+                    freq_ch2 = intent.getIntExtra(GetBluetoothDataService.FREQ_CHANNEL_2,0);
                     data_num_temp = intent.getIntExtra(GetBluetoothDataService.DATA_NUM_TEMP, 0);
                     img_CH1_horizontal_line.getLocationInWindow(location_img_CH1_horizontal_line);
                     img_CH2_horizontal_line.getLocationInWindow(location_img_CH2_horizontal_line);
