@@ -2,4 +2,4 @@
 
 ## 界面及功能展示
 
-![Screenshot_2017-05-07-19-59-19_com.android.wangpeng.oscilloscopedemo_layout](assets\Screenshot_2017-05-07-19-59-19_com.android.wangpeng.oscilloscopedemo_layout.png)
+![Screenshot_2017-05-07-19-59-19_com.android.wangpeng.oscilloscopedemo_layout](https://github.com/WangPengGuy/OscilloscopeDemo/blob/master/images/Screenshot_2017-05-07-19-59-19_com.android.wangpeng.oscilloscopedemo_layout.png?raw=true)
